@@ -7,7 +7,6 @@ export const pubsub = {
     } else {
       events[eventName] = [fn];
     }
-    // console.log(events);
   },
 
   pub: function (eventName, data) {
