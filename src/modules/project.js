@@ -7,20 +7,24 @@ export class Project {
     this.tasks = []; // task objects
     this.name = name;
   }
-}
 
-export function addProject(project) {
-  projects.push(project);
-  pubsub.pub("AddProject", project);
-}
+  addTask(task) {
+    tasks.push(task);
+  }
 
-export function removeProject(project) {
-  const index = projects.indexOf(project);
-  projects.splice(index, 1);
-  console.log(projects);
-  pubsub.pub("RemoveProject", project);
-}
+  static addProject(project) {
+    projects.push(project);
+    pubsub.pub("AddProject", project);
+  }
 
-export function getProjects() {
-  return projects;
+  static removeProject(project) {
+    const index = projects.indexOf(project);
+    projects.splice(index, 1);
+    console.log(projects);
+    pubsub.pub("RemoveProject", project);
+  }
+
+  static getProjects() {
+    return projects;
+  }
 }
