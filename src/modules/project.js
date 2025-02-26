@@ -1,11 +1,35 @@
 import { pubsub } from "./pubsub";
 
-const projects = [];
-
 export class Project {
+  static #projects = [];
+
+  static get projects() {
+    return Project.#projects;
+  }
+
   constructor(name) {
     this.tasks = []; // task objects
     this.name = name;
+    this.pageElement = Project.#createPageElement(this);
+    this.buttonElement = Project.#createProjectButton(this);
+  }
+
+  static #createPageElement(proj) {
+    const container = document.createElement("div");
+    const title = document.createElement("h1");
+    title.textContent = proj.name;
+    container.appendChild(title);
+    console.log(proj.name);
+    return container;
+  }
+
+  static #createProjectButton(proj) {
+    const button = document.createElement("button");
+    button.addEventListener("click", (target) => {
+      pubsub.pub("OpenProject", proj);
+    });
+    button.textContent = proj.name;
+    return button;
   }
 
   addTask(task) {
@@ -13,7 +37,8 @@ export class Project {
   }
 
   static addProject(project) {
-    projects.push(project);
+    Project.#projects.push(project);
+
     pubsub.pub("AddProject", project);
   }
 
@@ -22,9 +47,5 @@ export class Project {
     projects.splice(index, 1);
     console.log(projects);
     pubsub.pub("RemoveProject", project);
-  }
-
-  static getProjects() {
-    return projects;
   }
 }
