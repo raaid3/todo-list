@@ -11,6 +11,9 @@ function updateSidebar(project) {
 
 function renderProject(project) {
   projDisplay.innerHTML = "";
+  for (let task of project.tasks) {
+    project.pageElement.appendChild(task.pageElement);
+  }
   projDisplay.appendChild(project.pageElement);
 }
 
