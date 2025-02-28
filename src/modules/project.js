@@ -1,5 +1,19 @@
 import { pubsub } from "./pubsub";
 
+const addButton = document.querySelector(".sidebar__addButton");
+const modal = document.querySelector(".addProject-modal");
+addButton.addEventListener("click", () => {
+  modal.showModal();
+});
+
+const projForm = document.querySelector("#project-form");
+const newProjName = document.querySelector("#project-name");
+projForm.addEventListener("submit", (event) => {
+  console.log(`${newProjName.value}`);
+  Project.addProject(new Project(newProjName.value));
+  newProjName.value = "";
+});
+
 export class Project {
   static #projects = [];
 
@@ -19,7 +33,7 @@ export class Project {
     const title = document.createElement("h1");
     title.textContent = proj.name;
     container.appendChild(title);
-    console.log(proj.name);
+    // console.log(proj.name);
     return container;
   }
 
@@ -33,7 +47,7 @@ export class Project {
   }
 
   addTask(task) {
-    tasks.push(task);
+    this.tasks.push(task);
   }
 
   static addProject(project) {
