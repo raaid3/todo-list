@@ -1,4 +1,5 @@
 import { pubsub } from "./pubsub";
+import { TodoItem } from "./todo";
 
 const addButton = document.querySelector(".sidebar__addButton");
 const modal = document.querySelector(".addProject-modal");
@@ -9,8 +10,9 @@ addButton.addEventListener("click", () => {
 const projForm = document.querySelector("#project-form");
 const newProjName = document.querySelector("#project-name");
 projForm.addEventListener("submit", (event) => {
-  console.log(`${newProjName.value}`);
-  Project.addProject(new Project(newProjName.value));
+  // console.log(`${newProjName.value}`);
+  const proj = new Project(newProjName.value);
+  Project.addProject(proj);
   newProjName.value = "";
 });
 
@@ -26,6 +28,7 @@ export class Project {
     this.name = name;
     this.pageElement = Project.#createPageElement(this);
     this.buttonElement = Project.#createProjectButton(this);
+    this.pageElement.appendChild(Project.#createAddTaskButton(this));
   }
 
   static #createPageElement(proj) {
@@ -46,14 +49,46 @@ export class Project {
     return button;
   }
 
+  static #createAddTaskButton(proj) {
+    const button = document.createElement("button");
+
+    const form = document.createElement("form");
+    form.method = "dialog";
+
+    button.addEventListener("click", () => {
+      let task = new TodoItem("hi", 1, 1, 1);
+
+      let tForm = document.createElement("form");
+      tForm.method = "dialog";
+      tForm.id = `tForm-${task.id}`;
+
+      let tName = document.createElement("input");
+      tName.id = `tName-${task.id}`;
+      tName.type = "text";
+      tName.required = true;
+
+      let tLabel = document.createElement("label");
+      tLabel.for = tName.id;
+      tLabel.textContent = "Task name: ";
+
+      proj.addTask(task);
+      pubsub.pub("OpenProject", proj);
+    });
+    button.textContent = "Add task";
+    return button;
+  }
+
   addTask(task) {
     this.tasks.push(task);
   }
 
   static addProject(project) {
+    // const project = new Project(name);
+
     Project.#projects.push(project);
 
     pubsub.pub("AddProject", project);
+    pubsub.pub("OpenProject", project);
   }
 
   static removeProject(project) {

@@ -1,25 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Todo-List</title>
-</head>
-<body>
+  </head>
+  <body>
     <div class="sidebar">
-        <h1 class="sidebar__title">Projects</h1>
-        <button class="sidebar__addButton">Add Project</button>
-        <div class="sidebar__projects">
-            <dialog class="addProject-modal">
-                <form action="" method="dialog" id="project-form">
-                    <label for="project-name">Name: </label>
-                    <input type="text" id="project-name" required>
-                    <button>Submit</button>
-                </form>
-            </dialog>
-
-        </div>
+      <h1 class="sidebar__title">Projects</h1>
+      <button class="sidebar__addButton">Add Project</button>
+      <div class="sidebar__projects">
+        <dialog class="addProject-modal">
+          <form action="" method="dialog" id="project-form">
+            <label for="project-name">Name: </label>
+            <input type="text" id="project-name" maxlength="20" required />
+            <button>Submit</button>
+          </form>
+        </dialog>
+      </div>
     </div>
     <div class="project-display"></div>
-</body>
+  </body>
 </html>

@@ -1,9 +1,15 @@
 export class TodoItem {
+  static #counter = 0;
+
   constructor(name, date, description, priority) {
+    // properties that the user can interact with
     this.name = name;
     this.date = date;
     this.description = description;
     this.priority = priority;
+
+    // properties used behind the scenes
+    this.id = TodoItem.#counter++;
     this.pageElement = TodoItem.#createPageElement(this);
   }
 
