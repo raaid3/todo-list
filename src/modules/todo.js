@@ -1,6 +1,10 @@
 export class TodoItem {
   static #counter = 0;
 
+  static getTaskCount() {
+    return TodoItem.#counter;
+  }
+
   constructor(name, date, description, priority) {
     // properties that the user can interact with
     this.name = name;
