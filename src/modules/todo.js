@@ -14,14 +14,20 @@ export class TodoItem {
 
     // properties used behind the scenes
     this.id = TodoItem.#counter++;
-    this.pageElement = TodoItem.#createPageElement(this);
-  }
 
-  static #createPageElement(item) {
     const container = document.createElement("div");
     const h2 = document.createElement("h2");
-    h2.textContent = item.name;
+    h2.textContent = this.name;
     container.appendChild(h2);
-    return container;
+
+    this.titleElement = h2;
+    this.pageElement = container;
   }
+
+  updateElements() {
+    this.titleElement.textContent = this.name;
+  }
+  // static #createPageElement(item) {
+
+  // }
 }

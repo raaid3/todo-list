@@ -20,8 +20,55 @@ const tModal = document.querySelector(".add-task-modal");
 const tForm = document.querySelector("#task-form");
 const tName = document.querySelector("#task-name");
 
+tForm.addEventListener("submit", (event) => {
+  let todo = new TodoItem("", 0, 0, 0, 0);
+
+  function updateTodoInfo() {
+    todo.name = name.value;
+    pubsub.pub("RenderTodo", todo);
+  }
+
+  const modal = document.createElement("dialog");
+  modal.id = `tmodal-${todo.id}`;
+  modal.addEventListener("close", updateTodoInfo);
+
+  const form = document.createElement("form");
+  form.method = "dialog";
+  form.id = `tform-${todo.id}`;
+  form.addEventListener("submit", updateTodoInfo);
+
+  const name = document.createElement("input");
+  name.type = "text";
+  name.id = `tname-${todo.id}`;
+  name.required = true;
+  name.value = tName.value;
+  todo.name = name.value;
+
+  const label = document.createElement("label");
+  label.for = name.id;
+  label.textContent = "Name: ";
+
+  form.appendChild(label);
+  form.appendChild(name);
+  modal.appendChild(form);
+  todo.pageElement.appendChild(modal);
+
+  const button = document.createElement("button");
+  button.addEventListener("click", (event) => {
+    modal.showModal();
+  });
+  button.textContent = "Details";
+  todo.pageElement.appendChild(button);
+
+  Project.currentProject.addTask(todo);
+  // console.log(proj);
+  pubsub.pub("OpenProject", Project.currentProject);
+});
+
 export class Project {
   static #projects = [];
+
+  static currentProject;
 
   static get projects() {
     return Project.#projects;
@@ -56,46 +103,6 @@ export class Project {
   static #createAddTaskButton(proj) {
     const button = document.createElement("button");
 
-    // const form = document.createElement("form");
-    // form.method = "dialog";
-
-    // if form is submitted, make a modal and form for each task
-    tForm.addEventListener("submit", (event) => {
-      let todo = new TodoItem(tName.value, 1, 1, 1, 1);
-
-      const modal = document.createElement("dialog");
-      modal.id = `tmodal-${todo.id}`;
-
-      const form = document.createElement("form");
-      form.method = "dialog";
-      form.id = `tform-${todo.id}`;
-
-      const input = document.createElement("input");
-      input.type = "text";
-      input.id = `tname-${todo.id}`;
-      input.required = true;
-      input.value = tName.value;
-
-      const label = document.createElement("label");
-      label.for = input.id;
-      label.textContent = "Name: ";
-
-      form.appendChild(label);
-      form.appendChild(input);
-      modal.appendChild(form);
-      todo.pageElement.appendChild(modal);
-
-      const tButton = document.createElement("button");
-      tButton.addEventListener("click", (event) => {
-        modal.showModal();
-      });
-      tButton.textContent = "Details";
-      todo.pageElement.appendChild(tButton);
-
-      proj.addTask(todo);
-      pubsub.pub("OpenProject", proj);
-    });
-
     tModal.addEventListener("close", (event) => {
       tForm.reset();
     });
@@ -104,27 +111,6 @@ export class Project {
       console.log("clicked alright");
 
       tModal.showModal();
-      // let taskCount = TodoItem.getTaskCount();
-      // let tForm = document.createElement("form");
-      // tForm.method = "dialog";
-      // tForm.id = `tForm-${taskCount}`;
-      // tForm.addEventListener("submit", (event) => {
-      //   let task = new TodoItem(tName.value, 1, 1, 1);
-      //   proj.addTask(task);
-      //   pubsub.pub("OpenProject", proj);
-      // });
-      // let tLabel = document.createElement("label");
-      // tLabel.for = tName.id;
-      // tLabel.textContent = "Task name: ";
-      // tForm.appendChild(tLabel);
-      // let tName = document.createElement("input");
-      // tName.id = `tName-${taskCount}`;
-      // tName.type = "text";
-      // tName.required = true;
-      // tForm.appendChild(tName);
-      // let tButton = document.createElement("button");
-      // tButton.textContent = "Add task";
-      // tForm.appendChild(tButton);
     });
     button.textContent = "Add task";
     return button;
@@ -150,3 +136,7 @@ export class Project {
     pubsub.pub("RemoveProject", project);
   }
 }
+
+pubsub.sub("OpenProject", (project) => {
+  Project.currentProject = project;
+});
