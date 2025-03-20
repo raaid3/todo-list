@@ -6,28 +6,70 @@ export class TodoItem {
   }
 
   constructor(name, date, description, priority) {
-    // properties that the user can interact with
+    // Todo page element
+    const container = document.createElement("div"); // wil be visible on page
+    const h2 = document.createElement("h2"); // will be visible on page
+    h2.textContent = name;
+    container.appendChild(h2);
+
+    // modal opens for details
+    const modal = document.createElement("dialog");
+    modal.id = `tmodal-${this.id}`;
+
+    // Init form with provided information
+    const form = document.createElement("form");
+    form.method = "dialog";
+    form.id = `tform-${this.id}`;
+    form.addEventListener("submit", (event) => {
+      this.name = form.children[1].value;
+
+      this.reRender();
+    });
+
+    const tname = document.createElement("input");
+    tname.type = "text";
+    tname.id = `tname-${this.id}`;
+    tname.required = true;
+    tname.value = name;
+
+    const label = document.createElement("label");
+    label.for = tname.id;
+    label.textContent = "Name: ";
+
+    const button = document.createElement("button");
+    button.addEventListener("click", (event) => {
+      modal.showModal();
+    });
+    button.textContent = "Details";
+
+    // adding properties
     this.name = name;
     this.date = date;
     this.description = description;
     this.priority = priority;
-
-    // properties used behind the scenes
+    this.pageElement = container;
+    this.titleElement = h2;
     this.id = TodoItem.#counter++;
 
-    const container = document.createElement("div");
-    const h2 = document.createElement("h2");
-    h2.textContent = this.name;
-    container.appendChild(h2);
-
-    this.titleElement = h2;
-    this.pageElement = container;
+    // attaching everything to this.pageElement
+    this.pageElement.appendChild(button);
+    form.appendChild(label);
+    form.appendChild(tname);
+    modal.appendChild(form);
+    this.pageElement.appendChild(modal);
   }
 
   updateElements() {
     this.titleElement.textContent = this.name;
   }
-  // static #createPageElement(item) {
 
-  // }
+  render(parent) {
+    parent.appendChild(this.pageElement);
+  }
+  unRender(parent) {
+    parent.removeChild(this.pageElement);
+  }
+  reRender() {
+    this.titleElement.textContent = this.name;
+  }
 }
